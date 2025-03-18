@@ -32,8 +32,14 @@ def generate_page(from_path, template_path, dest_path, basepath):
 
     # Replace 'href="/' with 'href="{basepath}' in the template
     # Same as above but for src as well.
-    template = template.replace('href="/', f'href="{basepath}')
-    template = template.replace('src="/', f'src="{basepath}')
+    # Make sure basepath has a leading slash but no trailing slash
+    if not basepath.startswith('/'):
+        basepath = '/' + basepath
+    if basepath.endswith('/'):
+        basepath = basepath[:-1]
+    template = template.replace('href="/', f'href="{basepath}/')
+    template = template.replace('src="/', f'src="{basepath}/')
+
 
     # Write the new full HTML page to a file at dest_path. Be sure to create any necessary directories if they don't exist.
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
