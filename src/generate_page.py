@@ -11,7 +11,7 @@ def extract_title(markdown):
             return line[2:].strip()  # Remove '# ' and strip any extra whitespace
     raise Exception("No H1 header found")  # Raise an exception if no H1 header is found
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     # Read the markdown file at from_path and store the contents in a variable.
@@ -30,12 +30,17 @@ def generate_page(from_path, template_path, dest_path):
     template = template.replace("{{ Title }}", title)
     template = template.replace("{{ Content }}", markdown_in_html)
 
+    # Replace 'href="/' with 'href="{basepath}' in the template
+    # Same as above but for src as well.
+    template = template.replace('href="/', f'href="{basepath}')
+    template = template.replace('src="/', f'src="{basepath}')
+
     # Write the new full HTML page to a file at dest_path. Be sure to create any necessary directories if they don't exist.
     with open(dest_path, "w") as file:
         file.write(template)
 
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     # Get a list of all files and directories in the content directory
     files = os.listdir(dir_path_content)
     # Iterate over each file or directory in the content directory
@@ -47,8 +52,8 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
             # Create the corresponding subdirectory in the destination directory
             sub_dest_dir = os.path.join(dest_dir_path, file)
             os.makedirs(sub_dest_dir, exist_ok=True)
-            generate_pages_recursive(full_path, template_path, sub_dest_dir)
+            generate_pages_recursive(full_path, template_path, sub_dest_dir, basepath)
         # If the full path is a file, generate the page
         elif os.path.isfile(full_path):
             # Generate the page using the file as the markdown source and the file name as the destination
-            generate_page(full_path, template_path, os.path.join(dest_dir_path, file.replace(".md", ".html")))
+            generate_page(full_path, template_path, os.path.join(dest_dir_path, file.replace(".md", ".html")), basepath)

@@ -3,15 +3,15 @@ import shutil
 
 
 
-def clean_public_folder():
+def clean_public_folder(public_folder="public"):
     # Remove all files in the public folder
-    if os.path.exists("public"):
-        shutil.rmtree("public")
-    os.makedirs("public")
+    if os.path.exists(public_folder):
+        shutil.rmtree(public_folder)
+    os.makedirs(public_folder)
 
-def copy_folder_to_public(folder_name):
+def copy_folder_to_public(folder_name, public_folder="public"):
      # Copy the contents of the folder to inside the public folder
-    destination = "public/"
+    destination = f"{public_folder}/"
     
     if not os.path.exists(destination):
         os.makedirs(destination)  # Ensure the public folder exists
