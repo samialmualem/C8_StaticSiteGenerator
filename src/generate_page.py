@@ -45,15 +45,18 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
     files = os.listdir(dir_path_content)
     # Iterate over each file or directory in the content directory
     for file in files:
+        # Get the relative path of the file or directory
+        relative_path = os.path.relpath(os.path.join(dir_path_content, file), dir_path_content)
         # Get the full path of the file or directory
         full_path = os.path.join(dir_path_content, file)
         # If the full path is a directory, call generate_pages_recursive with the directory
         if os.path.isdir(full_path):
             # Create the corresponding subdirectory in the destination directory
-            sub_dest_dir = os.path.join(dest_dir_path, file)
+            sub_dest_dir = os.path.join(dest_dir_path, relative_path)
             os.makedirs(sub_dest_dir, exist_ok=True)
             generate_pages_recursive(full_path, template_path, sub_dest_dir, basepath)
         # If the full path is a file, generate the page
         elif os.path.isfile(full_path):
             # Generate the page using the file as the markdown source and the file name as the destination
-            generate_page(full_path, template_path, os.path.join(dest_dir_path, file.replace(".md", ".html")), basepath)
+            dest_file_path = os.path.join(dest_dir_path, relative_path.replace(".md", ".html"))
+            generate_page(full_path, template_path, dest_file_path, basepath)
