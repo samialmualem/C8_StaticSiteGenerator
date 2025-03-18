@@ -21,8 +21,9 @@ def main():
     print("\nGenerating pages")
 
     basepath = '/'
-    if sys.argv[0] is not None:
-        basepath = sys.argv[0]
+    # Check if there's at least one command-line argument
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
 
     #generate_page("content/index.md", "./template.html", "public/index.html")
     #generate_pages_recursive("content", "./template.html", "public", basepath)
